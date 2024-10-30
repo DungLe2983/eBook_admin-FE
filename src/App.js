@@ -4,8 +4,9 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Orders from './pages/Orders';
 import Products from './pages/Products';
-import Customers from './pages/Customers';
-
+import Authors from './pages/Authors';
+import Categories from './pages/Categories';
+import User from './pages/User';
 
 function App() {
     return (
@@ -15,7 +16,9 @@ function App() {
                     <Route index element={<Dashboard />} />
                     <Route path='orders' element={<Orders />} />
                     <Route path='products' element={<Products />} />
-                    <Route path='customers' element={<Customers />} />
+                    <Route path='users' element={<User />} />
+                    <Route path='authors' element={<Authors />} />
+                    <Route path='categories' element={<Categories />} />
                 </Route>
             </Routes>
         </Router>

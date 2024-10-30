@@ -5,7 +5,7 @@ import SalesChart from '../components/SalesChart';
 const Dashboard = () => {
     return (
         <div className='p-4 bg-white rounded shadow'>
-            <h2 className='text-3xl font-bold mb-8 '>Dashboard</h2>
+            <h2 className='text-heading3-bold mb-8'>Dashboard</h2>
             <div className='grid grid-cols-2 md:grid-cols-3 gap-10'>
                 <DataCard
                     title='Total Revenue'

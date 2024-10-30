@@ -54,7 +54,7 @@ const Orders = () => {
         //     prevOrders.filter((order) => order.id !== orderId)
         // );
         // setDeleteModalOpen(false);
-        toast.success("Delete Order Successfully")
+        toast.success('Delete Order Successfully');
     };
 
     const handleSubmitOrder = (orderData) => {
@@ -74,10 +74,16 @@ const Orders = () => {
 
     return (
         <div className='bg-white p-6 rounded-lg shadow-lg border border-gray-300 flex-1'>
-            <div className='flex justify-between items-center'>
-                <h2 className='text-xl font-semibold text-gray-800'>
-                    Recent Orders
-                </h2>
+            <h2 className='text-heading3-bold mb-4 '>Orders</h2>
+            <div className='bg-white h-16 flex justify-between items-center border-b border-gray-200'>
+                <div className='relative'>
+                    <i className='ri-search-line text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'></i>
+                    <input
+                        type='text'
+                        placeholder='Search...'
+                        className='text-sm focus:outline-none active:outline-none h-10 w-[24rem] border border-gray-300 rounded-sm pl-11 pr-4'
+                    />
+                </div>
                 <button
                     onClick={handleCreateOrder}
                     className='bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-600 transition'
@@ -85,7 +91,8 @@ const Orders = () => {
                     Create Order
                 </button>
             </div>
-            <div className='mt-4 overflow-x-auto'>
+
+            <div className='mt-6 overflow-x-auto'>
                 <table className='min-w-full bg-white border border-gray-200 rounded-lg'>
                     <thead>
                         <tr className='bg-gray-100 border-b border-gray-200'>
@@ -156,10 +163,10 @@ const Orders = () => {
                                         {order.current_order_status}
                                     </span>
                                 </td>
-                                <td className='px-4 py-3 text-sm text-gray-700 flex space-x-2'>
+                                <td className='px-4 py-3 text-sm text-gray-700 flex space-x-4'>
                                     <button
                                         onClick={() => handleEditOrder(order)}
-                                        className='text-blue-600 hover:text-blue-800'
+                                        className='text-blue-600 hover:text-blue-800 text-[18px]'
                                     >
                                         <i className='ri-edit-line'></i>
                                     </button>
@@ -167,7 +174,7 @@ const Orders = () => {
                                         onClick={() =>
                                             confirmDeleteOrder(order)
                                         }
-                                        className='text-red-600 hover:text-red-800'
+                                        className='text-red-600 hover:text-red-800 text-[18px]'
                                     >
                                         <i className='ri-delete-bin-line'></i>
                                     </button>
