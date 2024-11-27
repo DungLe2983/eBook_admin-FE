@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
-const UserForm = ({ closeForm, onSubmit, initialData = null }) => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [fullname, setFullname] = useState('');
+const PublisherForm = ({ closeForm, onSubmit, initialData = null }) => {
+    const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
+    const [email, setEmail] = useState('');
+    const [website, setWebsite] = useState('');
 
     useEffect(() => {
         if (initialData) {
-            setUsername(initialData.username);
-            setEmail(initialData.email);
-            setFullname(initialData.fullname);
+            setName(initialData.name);
             setPhone(initialData.phone);
             setAddress(initialData.address);
+            setEmail(initialData.email);
+            setWebsite(initialData.website);
         }
     }, [initialData]);
 
@@ -22,14 +22,14 @@ const UserForm = ({ closeForm, onSubmit, initialData = null }) => {
         e.preventDefault();
         const formData = {
             id: initialData ? initialData.id : new Date().getTime().toString(),
-            username,
-            email,
-            fullname,
+            name,
             phone,
             address,
+            email,
+            website,
         };
         onSubmit(formData);
-        toast.success('User saved successfully');
+        toast.success('Publisher saved successfully');
         closeForm();
     };
 
@@ -37,43 +37,19 @@ const UserForm = ({ closeForm, onSubmit, initialData = null }) => {
         <div className='fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50'>
             <div className='bg-white w-[30rem] p-6 rounded-lg shadow-lg relative'>
                 <h2 className='text-heading4-bold mb-8 text-center text-primary'>
-                    {initialData ? 'Edit User' : 'Create User'}
+                    {initialData ? 'Edit Publisher' : 'Create Publisher'}
                 </h2>
                 <form onSubmit={handleSubmit}>
                     <div className='mb-4'>
                         <label className='block text-sm font-medium text-gray-700'>
-                            Username
+                            Name
                         </label>
                         <input
                             type='text'
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
-                            placeholder='Nhập tên người dùng'
-                        />
-                    </div>
-                    <div className='mb-4'>
-                        <label className='block text-sm font-medium text-gray-700'>
-                            Email
-                        </label>
-                        <input
-                            type='email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
-                            placeholder='Nhập email'
-                        />
-                    </div>
-                    <div className='mb-4'>
-                        <label className='block text-sm font-medium text-gray-700'>
-                            Full Name
-                        </label>
-                        <input
-                            type='text'
-                            value={fullname}
-                            onChange={(e) => setFullname(e.target.value)}
-                            className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
-                            placeholder='Nhập họ và tên'
+                            placeholder='Enter publisher name'
                         />
                     </div>
                     <div className='mb-4'>
@@ -85,7 +61,7 @@ const UserForm = ({ closeForm, onSubmit, initialData = null }) => {
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
-                            placeholder='Nhập số điện thoại'
+                            placeholder='Enter phone number'
                         />
                     </div>
                     <div className='mb-4'>
@@ -97,7 +73,31 @@ const UserForm = ({ closeForm, onSubmit, initialData = null }) => {
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
                             className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
-                            placeholder='Nhập địa chỉ'
+                            placeholder='Enter address'
+                        />
+                    </div>
+                    <div className='mb-4'>
+                        <label className='block text-sm font-medium text-gray-700'>
+                            Email
+                        </label>
+                        <input
+                            type='email'
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                            placeholder='Enter email'
+                        />
+                    </div>
+                    <div className='mb-4'>
+                        <label className='block text-sm font-medium text-gray-700'>
+                            Website
+                        </label>
+                        <input
+                            type='url'
+                            value={website}
+                            onChange={(e) => setWebsite(e.target.value)}
+                            className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                            placeholder='Enter website URL'
                         />
                     </div>
                     <div className='flex justify-end'>
@@ -121,4 +121,4 @@ const UserForm = ({ closeForm, onSubmit, initialData = null }) => {
     );
 };
 
-export default UserForm;
+export default PublisherForm;

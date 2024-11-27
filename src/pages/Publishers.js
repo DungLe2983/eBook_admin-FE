@@ -1,79 +1,83 @@
 import React, { useState } from 'react';
-import { format } from 'date-fns';
-import OrderForm from './Forms/OrderForm';
 import DeleteButton from '../components/DeleteButton.js';
 import toast from 'react-hot-toast';
+import PublisherForm from './Forms/PublisherForm.js';
 
-const Orders = () => {
-    const [orders, setOrders] = useState([
+const Publishers = () => {
+    const [publishers, setPublishers] = useState([
         {
             id: '1',
-            product_id: '4324',
-            customer_id: '23143',
-            customer_name: 'Shirley A. Lape',
-            order_date: '2022-05-17T03:24:00',
-            order_total: '$435.50',
-            current_order_status: 'Pending',
-            shipment_address: 'Cottage Grove, OR 97424',
+            name: 'Penguin Books',
+            phone: '123-456-789',
+            address: '123 Publisher Lane, New York, USA',
+            email: 'contact@penguin.com',
+            website: 'https://www.penguin.com',
         },
         {
             id: '2',
-            product_id: '12345',
-            customer_id: '1515',
-            customer_name: 'Shirley A. Lape',
-            order_date: '2022-05-17T03:24:00',
-            order_total: '$435.50',
-            current_order_status: 'Completed',
-            shipment_address: 'Cottage Grove, OR 97424',
+            name: 'HarperCollins',
+            phone: '987-654-321',
+            address: '456 Book Street, London, UK',
+            email: 'info@harpercollins.com',
+            website: 'https://www.harpercollins.com',
         },
-        // Các đơn hàng khác...
     ]);
 
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editData, setEditData] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [selectedPublisher, setSelectedPublisher] = useState(null);
 
-    const handleCreateOrder = () => {
+    const handleCreatePublisher = () => {
         setEditData(null);
         setIsFormOpen(true);
     };
 
-    const handleEditOrder = (order) => {
-        setEditData(order);
+    const handleEditPublisher = (publisher) => {
+        setEditData(publisher);
         setIsFormOpen(true);
     };
 
-    const confirmDeleteOrder = (order) => {
-        setSelectedOrder(order);
+    const confirmDeletePublisher = (publisher) => {
+        setSelectedPublisher(publisher);
         setDeleteModalOpen(true);
     };
-    const handleDeleteOrder = (orderId) => {
-        // setOrders((prevOrders) =>
-        //     prevOrders.filter((order) => order.id !== orderId)
-        // );
-        // setDeleteModalOpen(false);
-        toast.success('Delete Order Successfully');
+
+    const handleDeletePublisher = (publisherId) => {
+        setPublishers((prevPublishers) =>
+            prevPublishers.filter((publisher) => publisher.id !== publisherId)
+        );
+        setDeleteModalOpen(false);
+        toast.success('Publisher deleted successfully');
     };
 
-    const handleSubmitOrder = (orderData) => {
+    const handleSubmitPublisher = (publisherData) => {
         if (editData) {
-            // Cập nhật đơn hàng
-            setOrders((prevOrders) =>
-                prevOrders.map((order) =>
-                    order.id === orderData.id ? orderData : order
+            // Update existing publisher
+            setPublishers((prevPublishers) =>
+                prevPublishers.map((publisher) =>
+                    publisher.id === publisherData.id
+                        ? publisherData
+                        : publisher
                 )
             );
         } else {
-            // Thêm đơn hàng mới
-            setOrders((prevOrders) => [...prevOrders, orderData]);
+            // Add new publisher
+            setPublishers((prevPublishers) => [
+                ...prevPublishers,
+                {
+                    ...publisherData,
+                    id: new Date().getTime().toString(),
+                },
+            ]);
         }
         setIsFormOpen(false);
+        toast.success('Publisher saved successfully');
     };
 
     return (
         <div className='bg-white p-6 rounded-lg shadow-lg border border-gray-300 flex-1'>
-            <h2 className='text-heading3-bold mb-4 '>Orders</h2>
+            <h2 className='text-heading3-bold mb-4 '>Publishers</h2>
             <div className='bg-white h-16 flex justify-between items-center border-b border-gray-200'>
                 <div className='relative'>
                     <i className='ri-search-line text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'></i>
@@ -84,14 +88,14 @@ const Orders = () => {
                     />
                 </div>
                 <button
-                    onClick={handleCreateOrder}
+                    onClick={handleCreatePublisher}
                     className='bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-600 transition'
                 >
-                    Create Order
+                    Create Publisher
                 </button>
             </div>
 
-            <div className='mt-6 overflow-x-auto'>
+            <div className='overflow-x-auto mt-6'>
                 <table className='min-w-full bg-white border border-gray-200 rounded-lg'>
                     <thead>
                         <tr className='bg-gray-100 border-b border-gray-200'>
@@ -99,22 +103,19 @@ const Orders = () => {
                                 ID
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                                Product ID
+                                Name
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                                Customer Name
+                                Phone
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                                Order Date
+                                Address
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                                Order Total
+                                Email
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                                Shipping Address
-                            </th>
-                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                                Order Status
+                                Website
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                                 Actions
@@ -122,58 +123,50 @@ const Orders = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.map((order, index) => (
+                        {publishers.map((publisher) => (
                             <tr
-                                key={order.id}
-                                className={`border-b ${
-                                    index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                                } hover:bg-gray-100 transition-colors`}
+                                key={publisher.id}
+                                className='border-b hover:bg-gray-100 transition-colors'
                             >
                                 <td className='px-4 py-3 text-sm text-gray-700'>
-                                    {order.id}
+                                    {publisher.id}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
-                                    {order.product_id}
+                                    {publisher.name}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
-                                    {order.customer_name}
+                                    {publisher.phone}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
-                                    {format(
-                                        new Date(order.order_date),
-                                        'dd MMM yyyy'
-                                    )}
+                                    {publisher.address}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
-                                    {order.order_total}
+                                    {publisher.email}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
-                                    {order.shipment_address}
-                                </td>
-                                <td className='px-4 py-3 text-sm font-medium'>
-                                    <span
-                                        className={`px-2 py-1 rounded-full text-xs ${
-                                            order.current_order_status ===
-                                            'Completed'
-                                                ? 'bg-green-100 text-green-700'
-                                                : 'bg-yellow-100 text-yellow-700'
-                                        }`}
+                                    <a
+                                        href={publisher.website}
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                        className='text-blue-500 hover:underline'
                                     >
-                                        {order.current_order_status}
-                                    </span>
+                                        {publisher.website}
+                                    </a>
                                 </td>
-                                <td className='px-4 py-3 text-sm text-gray-700 flex space-x-4'>
+                                <td className='px-4 py-3 text-sm text-gray-700 flex space-x-2'>
                                     <button
-                                        onClick={() => handleEditOrder(order)}
-                                        className='text-blue-600 hover:text-blue-800 text-[18px]'
+                                        onClick={() =>
+                                            handleEditPublisher(publisher)
+                                        }
+                                        className='text-blue-600 hover:text-blue-800'
                                     >
                                         <i className='ri-edit-line'></i>
                                     </button>
                                     <button
                                         onClick={() =>
-                                            confirmDeleteOrder(order)
+                                            confirmDeletePublisher(publisher)
                                         }
-                                        className='text-red-600 hover:text-red-800 text-[18px]'
+                                        className='text-red-600 hover:text-red-800'
                                     >
                                         <i className='ri-delete-bin-line'></i>
                                     </button>
@@ -183,22 +176,25 @@ const Orders = () => {
                     </tbody>
                 </table>
             </div>
+
             {isFormOpen && (
-                <OrderForm
+                <PublisherForm
                     closeForm={() => setIsFormOpen(false)}
-                    onSubmit={handleSubmitOrder}
+                    onSubmit={handleSubmitPublisher}
                     initialData={editData}
                 />
             )}
-            {deleteModalOpen && selectedOrder && (
+            {deleteModalOpen && selectedPublisher && (
                 <DeleteButton
                     onClose={() => setDeleteModalOpen(false)}
-                    onConfirm={() => handleDeleteOrder(selectedOrder.id)}
-                    itemName={selectedOrder.id}
+                    onConfirm={() =>
+                        handleDeletePublisher(selectedPublisher.id)
+                    }
+                    itemName={selectedPublisher.name}
                 />
             )}
         </div>
     );
 };
 
-export default Orders;
+export default Publishers;

@@ -63,7 +63,7 @@ const Sidebar = () => (
                     }
                 >
                     <i className='ri-shopping-bag-line text-xl'></i>
-                    <span>Products</span>
+                    <span>Books</span>
                 </NavLink>
             </li>
             <li>
@@ -79,6 +79,21 @@ const Sidebar = () => (
                 >
                     <i className='ri-book-open-fill text-xl'></i>
                     <span>Authors</span>
+                </NavLink>
+            </li>
+            <li>
+                <NavLink
+                    to='/publishers'
+                    className={({ isActive }) =>
+                        `flex items-center space-x-2 py-4 pl-4 ${
+                            isActive
+                                ? 'bg-gray-600 text-primary'
+                                : 'hover:bg-gray-600 hover:text-primary'
+                        }`
+                    }
+                >
+                    <i className='ri-building-fill text-xl'></i>
+                    <span>Publishers</span>
                 </NavLink>
             </li>
             <li>

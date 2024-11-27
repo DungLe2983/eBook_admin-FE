@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import DeleteButton from '../components/DeleteButton';
 import ProductForm from './Forms/ProductForm';
-import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 
 const Products = () => {
@@ -9,20 +8,30 @@ const Products = () => {
         {
             id: '1',
             title: 'The Great Gatsby',
+            description: 'A classic novel set in the Jazz Age.',
             author: 'F. Scott Fitzgerald',
-            publication_date: '1925-04-10',
+            publication_year: 1925,
             price: '$10.99',
+            stock_quantity: 15,
+            isbn: '9780743273565',
+            cover_image:
+                'https://nhasachphuongnam.com/images/detailed/160/81YOuOGFCJL.jpg',
             categories: ['Fiction', 'Classic'],
         },
         {
             id: '2',
             title: 'Sapiens: A Brief History of Humankind',
+            description: 'An exploration of human history and evolution.',
             author: 'Yuval Noah Harari',
-            publication_date: '2011-01-01',
+            publication_year: 2011,
             price: '$14.99',
+            stock_quantity: 8,
+            isbn: '9780062316097',
+            cover_image:
+                'https://images.booksense.com/images/700/596/9781338596700.jpg',
             categories: ['Non-Fiction', 'History'],
         },
-        // Các sách khác...
+        // Thêm sách khác nếu cần...
     ]);
 
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -46,9 +55,9 @@ const Products = () => {
     };
 
     const handleDeleteBook = (bookId) => {
-        // setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
-        // setDeleteModalOpen(false);
-        toast.success('Delete Book Successfully');
+        setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+        setDeleteModalOpen(false);
+        toast.success('Book deleted successfully');
     };
 
     const handleSubmitBook = (bookData) => {
@@ -100,13 +109,22 @@ const Products = () => {
                                 Author
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                                Publication Date
+                                Description
+                            </th>
+                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                                Publication Year
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                                 Price
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                                Stock Quantity
+                            </th>
+                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                                 Categories
+                            </th>
+                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                                Image
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                                 Actions
@@ -125,19 +143,29 @@ const Products = () => {
                                 <td className='px-4 py-3 text-sm text-gray-700'>
                                     {book.author}
                                 </td>
+                                <td className='px-4 py-3 text-sm text-gray-700 '>
+                                    {book.description}
+                                </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
-                                    {format(
-                                        new Date(book.publication_date),
-                                        'MM/dd/yyyy'
-                                    )}
+                                    {book.publication_year}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
                                     {book.price}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
+                                    {book.stock_quantity}
+                                </td>
+                                <td className='px-4 py-3 text-sm text-gray-700'>
                                     {book.categories.join(', ')}
                                 </td>
-                                <td className='py-3 px-4 flex space-x-4'>
+                                <td className='px-4 py-3 text-sm text-gray-700'>
+                                    <img
+                                        src={book.cover_image}
+                                        className='w-20 h-20 object-contain'
+                                        alt='anhBook'
+                                    />
+                                </td>
+                                <td className='py-3 px-4 space-x-4 '>
                                     <button
                                         onClick={() => handleEditBook(book)}
                                         className='text-blue-600 hover:text-blue-800 text-[18px]'

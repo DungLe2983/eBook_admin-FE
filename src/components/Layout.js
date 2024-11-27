@@ -13,7 +13,7 @@ const Layout = () => {
                 <main className='p-4 flex-1 overflow-y-auto'>
                     <Outlet />
                 </main>
-                <Toaster position='bottom-right' />;
+                <Toaster position='bottom-right' />
             </div>
         </div>
     );

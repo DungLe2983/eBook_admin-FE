@@ -5,9 +5,30 @@ import toast from 'react-hot-toast';
 
 const User = () => {
     const [users, setUsers] = useState([
-        { id: '1', username: 'john_doe', email: 'john@example.com' },
-        { id: '2', username: 'jane_doe', email: 'jane@example.com' },
-        { id: '3', username: 'user123', email: 'user123@example.com' },
+        {
+            id: '1',
+            username: 'john_doe',
+            email: 'john@example.com',
+            fullname: 'John Doe',
+            phone: '123-456-7890',
+            address: '123 Main St, City, Country',
+        },
+        {
+            id: '2',
+            username: 'jane_doe',
+            email: 'jane@example.com',
+            fullname: 'Jane Doe',
+            phone: '987-654-3210',
+            address: '456 Elm St, City, Country',
+        },
+        {
+            id: '3',
+            username: 'user123',
+            email: 'user123@example.com',
+            fullname: 'User Test',
+            phone: '555-555-5555',
+            address: '789 Pine St, City, Country',
+        },
     ]);
 
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -89,6 +110,15 @@ const User = () => {
                                 Email
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                                Full Name
+                            </th>
+                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                                Phone
+                            </th>
+                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                                Address
+                            </th>
+                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                                 Actions
                             </th>
                         </tr>
@@ -107,6 +137,15 @@ const User = () => {
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
                                     {user.email}
+                                </td>
+                                <td className='px-4 py-3 text-sm text-gray-700'>
+                                    {user.fullname}
+                                </td>
+                                <td className='px-4 py-3 text-sm text-gray-700'>
+                                    {user.phone}
+                                </td>
+                                <td className='px-4 py-3 text-sm text-gray-700'>
+                                    {user.address}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700 flex space-x-2'>
                                     <button

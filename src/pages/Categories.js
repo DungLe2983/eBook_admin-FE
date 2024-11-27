@@ -5,11 +5,36 @@ import toast from 'react-hot-toast';
 
 const Categories = () => {
     const [categories, setCategories] = useState([
-        { id: '1', name: 'Fiction', numberOfProducts: 5 },
-        { id: '2', name: 'Non-Fiction', numberOfProducts: 3 },
-        { id: '3', name: 'Science', numberOfProducts: 8 },
-        { id: '4', name: 'History', numberOfProducts: 4 },
-        { id: '5', name: 'Biography', numberOfProducts: 2 },
+        {
+            id: '1',
+            name: 'Fiction',
+            numberOfProducts: 5,
+            description: 'Fictional books including novels and stories.',
+        },
+        {
+            id: '2',
+            name: 'Non-Fiction',
+            numberOfProducts: 3,
+            description: 'Non-fictional books like self-help and memoirs.',
+        },
+        {
+            id: '3',
+            name: 'Science',
+            numberOfProducts: 8,
+            description: 'Books about various scientific topics.',
+        },
+        {
+            id: '4',
+            name: 'History',
+            numberOfProducts: 4,
+            description: 'Historical books about past events and eras.',
+        },
+        {
+            id: '5',
+            name: 'Biography',
+            numberOfProducts: 2,
+            description: 'Books about people’s life stories.',
+        },
     ]);
 
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -55,8 +80,8 @@ const Categories = () => {
                 {
                     ...categoryData,
                     id: new Date().getTime().toString(),
-                    numberOfProducts: 0,
-                }, // Set default number of products
+                    numberOfProducts: 0, // Set default number of products
+                },
             ]);
         }
         setIsFormOpen(false);
@@ -97,6 +122,9 @@ const Categories = () => {
                                 Number of Books
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                                Description
+                            </th>
+                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                                 Actions
                             </th>
                         </tr>
@@ -113,8 +141,11 @@ const Categories = () => {
                                 <td className='px-4 py-3 text-sm text-gray-700'>
                                     {category.name}
                                 </td>
-                                <td className='px-4 py-3 text-sm text-gray-700 '>
+                                <td className='px-4 py-3 text-sm text-gray-700'>
                                     {category.numberOfProducts}
+                                </td>
+                                <td className='px-4 py-3 text-sm text-gray-700'>
+                                    {category.description}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700 flex space-x-4'>
                                     <button

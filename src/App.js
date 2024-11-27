@@ -7,6 +7,7 @@ import Products from './pages/Products';
 import Authors from './pages/Authors';
 import Categories from './pages/Categories';
 import User from './pages/User';
+import Publishers from './pages/Publishers';
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path='users' element={<User />} />
                     <Route path='authors' element={<Authors />} />
                     <Route path='categories' element={<Categories />} />
+                    <Route path='publishers' element={<Publishers />} />
                 </Route>
             </Routes>
         </Router>

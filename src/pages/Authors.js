@@ -5,11 +5,41 @@ import toast from 'react-hot-toast';
 
 const Authors = () => {
     const [authors, setAuthors] = useState([
-        { id: '1', name: 'George Orwell', numberOfBooks: 5 },
-        { id: '2', name: 'J.K. Rowling', numberOfBooks: 7 },
-        { id: '3', name: 'J.R.R. Tolkien', numberOfBooks: 4 },
-        { id: '4', name: 'Isaac Asimov', numberOfBooks: 3 },
-        { id: '5', name: 'Agatha Christie', numberOfBooks: 6 },
+        {
+            id: '1',
+            name: 'George Orwell',
+            bio: 'English novelist, essayist, journalist, and critic.',
+            email: 'george.orwell@example.com',
+            website: 'https://www.georgeorwell.org',
+        },
+        {
+            id: '2',
+            name: 'J.K. Rowling',
+            bio: 'British author, best known for the Harry Potter series.',
+            email: 'jk.rowling@example.com',
+            website: 'https://www.jkrowling.com',
+        },
+        {
+            id: '3',
+            name: 'J.R.R. Tolkien',
+            bio: 'English writer, poet, philologist, and academic.',
+            email: 'jrr.tolkien@example.com',
+            website: 'https://www.tolkien.co.uk',
+        },
+        {
+            id: '4',
+            name: 'Isaac Asimov',
+            bio: 'American author and professor of biochemistry.',
+            email: 'isaac.asimov@example.com',
+            website: 'https://www.asimovonline.com',
+        },
+        {
+            id: '5',
+            name: 'Agatha Christie',
+            bio: 'English writer known for her detective novels.',
+            email: 'agatha.christie@example.com',
+            website: 'https://www.agathachristie.com',
+        },
     ]);
 
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -55,8 +85,7 @@ const Authors = () => {
                 {
                     ...authorData,
                     id: new Date().getTime().toString(),
-                    numberOfBooks: 0,
-                }, // Set default number of books
+                },
             ]);
         }
         setIsFormOpen(false);
@@ -65,7 +94,7 @@ const Authors = () => {
 
     return (
         <div className='bg-white p-6 rounded-lg shadow-lg border border-gray-300 flex-1'>
-            <h2 className='text-heading3-bold mb-4 '>Authors</h2>
+            <h2 className='text-heading3-bold mb-4'>Authors</h2>
             <div className='bg-white h-16 flex justify-between items-center border-b border-gray-200'>
                 <div className='relative'>
                     <i className='ri-search-line text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'></i>
@@ -91,10 +120,16 @@ const Authors = () => {
                                 ID
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                                Author Name
+                                Name
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                                Number of Books
+                                Bio
+                            </th>
+                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                                Email
+                            </th>
+                            <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                                Website
                             </th>
                             <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                                 Actions
@@ -114,7 +149,20 @@ const Authors = () => {
                                     {author.name}
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700'>
-                                    {author.numberOfBooks}
+                                    {author.bio}
+                                </td>
+                                <td className='px-4 py-3 text-sm text-gray-700'>
+                                    {author.email}
+                                </td>
+                                <td className='px-4 py-3 text-sm text-gray-700'>
+                                    <a
+                                        href={author.website}
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                        className='text-blue-500 hover:underline'
+                                    >
+                                        {author.website}
+                                    </a>
                                 </td>
                                 <td className='px-4 py-3 text-sm text-gray-700 flex space-x-2'>
                                     <button
