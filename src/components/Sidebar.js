@@ -4,7 +4,7 @@ import logo from '../../src/assets/a.png';
 
 const Sidebar = () => (
     <nav className='w-64 bg-gray-800 text-white flex flex-col'>
-        <img src={logo} alt='logo' width={180} className='p-4' />
+        <img src={logo} alt='logo' width={180} className='p-4 pb-8' />
         <ul className='space-y-2 text-lg'>
             <li>
                 <NavLink
@@ -62,7 +62,7 @@ const Sidebar = () => (
                         }`
                     }
                 >
-                    <i className='ri-shopping-bag-line text-xl'></i>
+                    <i className='ri-book-open-fill text-xl'></i>
                     <span>Books</span>
                 </NavLink>
             </li>
@@ -77,7 +77,7 @@ const Sidebar = () => (
                         }`
                     }
                 >
-                    <i className='ri-book-open-fill text-xl'></i>
+                    <i className='ri-contacts-book-3-fill'></i>
                     <span>Authors</span>
                 </NavLink>
             </li>
@@ -107,7 +107,7 @@ const Sidebar = () => (
                         }`
                     }
                 >
-                    <i className='ri-user-line text-xl'></i>
+                    <i className='ri-group-fill'></i>
                     <span>Users</span>
                 </NavLink>
             </li>
