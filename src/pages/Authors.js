@@ -2,18 +2,27 @@ import React, { useEffect, useState } from "react";
 import AuthorForm from "./Forms/AuthorForm";
 import DeleteButton from "../components/DeleteButton.js";
 import toast from "react-hot-toast";
-import axios from "axios";
-import { getAllAuthors } from "../services/authorService.js";
+import {
+  createAuthor,
+  deleteAuthor,
+  getAllAuthors,
+  updateAuthorById,
+} from "../services/authorService.js";
 
 const Authors = () => {
   const [authors, setAuthors] = useState([]);
-  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredAuthors, setFilteredAuthors] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedAuthor, setSelectedAuthor] = useState(null);
+
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
         const data = await getAllAuthors();
         setAuthors(data.data);
-        console.log(data.data);
       } catch (error) {
         console.log("Failed to fetch authors");
       }
@@ -22,10 +31,13 @@ const Authors = () => {
     fetchAuthors();
   }, []);
 
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editData, setEditData] = useState(null);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedAuthor, setSelectedAuthor] = useState(null);
+  // Lọc danh sách tác giả theo từ khóa tìm kiếm
+  useEffect(() => {
+    const filtered = authors.filter((author) =>
+      author.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredAuthors(filtered);
+  }, [searchTerm, authors]);
 
   const handleCreateAuthor = () => {
     setEditData(null);
@@ -42,34 +54,41 @@ const Authors = () => {
     setDeleteModalOpen(true);
   };
 
-  const handleDeleteAuthor = (authorId) => {
-    setAuthors((prevAuthors) =>
-      prevAuthors.filter((author) => author.id !== authorId)
-    );
-    setDeleteModalOpen(false);
-    toast.success("Author deleted successfully");
+  const handleSubmitAuthor = async (authorData) => {
+    try {
+      if (editData) {
+        const updatedAuthor = await updateAuthorById(editData.id, authorData);
+        setAuthors((prevAuthors) =>
+          prevAuthors.map((author) =>
+            author.id === editData.id ? updatedAuthor.data : author
+          )
+        );
+        toast.success("Author updated successfully");
+      } else {
+        const newAuthor = await createAuthor(authorData);
+        setAuthors((prevAuthors) => [...prevAuthors, newAuthor.data]);
+        toast.success("Author created successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to save author");
+    } finally {
+      setIsFormOpen(false);
+    }
   };
 
-  const handleSubmitAuthor = (authorData) => {
-    if (editData) {
-      // Update existing author
+  const handleDeleteAuthor = async (id) => {
+    try {
+      await deleteAuthor(id);
       setAuthors((prevAuthors) =>
-        prevAuthors.map((author) =>
-          author.id === authorData.id ? authorData : author
-        )
+        prevAuthors.filter((author) => author.id !== id)
       );
-    } else {
-      // Add new author
-      setAuthors((prevAuthors) => [
-        ...prevAuthors,
-        {
-          ...authorData,
-          id: new Date().getTime().toString(),
-        },
-      ]);
+      toast.success("Author deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete author");
+    } finally {
+      setDeleteModalOpen(false);
+      setSelectedAuthor(null);
     }
-    setIsFormOpen(false);
-    toast.success("Author saved successfully");
   };
 
   return (
@@ -81,6 +100,8 @@ const Authors = () => {
           <input
             type='text'
             placeholder='Search...'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className='text-sm focus:outline-none active:outline-none h-10 w-[24rem] border border-gray-300 rounded-sm pl-11 pr-4'
           />
         </div>
@@ -114,7 +135,7 @@ const Authors = () => {
             </tr>
           </thead>
           <tbody>
-            {authors.map((author) => (
+            {filteredAuthors.map((author) => (
               <tr
                 key={author.id}
                 className='border-b hover:bg-gray-100 transition-colors'
@@ -138,7 +159,7 @@ const Authors = () => {
                     {author.website}
                   </a>
                 </td>
-                <td className='px-4 py-3 text-sm text-gray-700 flex space-x-2'>
+                <td className='px-4 py-3 text-sm text-gray-700 space-x-2'>
                   <button
                     onClick={() => handleEditAuthor(author)}
                     className='text-blue-600 hover:text-blue-800'
