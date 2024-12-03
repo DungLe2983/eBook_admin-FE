@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { getBookAuthor } from "../services/bookAuthorService"; // Import bookAuthorService
-import { getAllPublishers } from "../services/publisherService"; // Import publisherService
+import { getBookAuthor } from "../services/bookAuthorService";
+import { getAllPublishers } from "../services/publisherService";
 import DeleteButton from "../components/DeleteButton";
 import BookForm from "./Forms/ProductForm";
+import { getBookCategory } from "../services/bookCategoryService";
 
 const Products = () => {
-  const [bookAuthors, setBookAuthors] = useState([]); // State lưu BookAuthors
-  const [publishers, setPublishers] = useState([]); // State lưu Publishers
-  const [isFormOpen, setIsFormOpen] = useState(false); // State cho Form (nếu cần)
-  const [editData, setEditData] = useState(null); // Dữ liệu cho chỉnh sửa (nếu cần)
+  const [bookAuthors, setBookAuthors] = useState([]);
+  const [bookCategories, setBookCategories] = useState([]);
+  const [publishers, setPublishers] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const fetchBookAuthorsAndPublishers = async () => {
@@ -27,13 +32,19 @@ const Products = () => {
         } else {
           console.error("No data found for Publishers");
         }
+        const bookCategoryData = await getBookCategory();
+        if (bookCategoryData && bookCategoryData.data) {
+          setBookCategories(bookCategoryData.data);
+        } else {
+          console.error("No data found for bookCategory");
+        }
       } catch (error) {
         console.log("Failed to fetch BookAuthors or Publishers");
       }
     };
 
     fetchBookAuthorsAndPublishers();
-  }, []);
+  }, [checked]);
 
   const getAuthorName = (authorId) => {
     const author = bookAuthors.find((ba) => ba.author.id === authorId);
@@ -45,8 +56,18 @@ const Products = () => {
     return publisher ? publisher.name : "Unknown Publisher";
   };
 
+  const getCategoryName = (categoryId) => {
+    const category = bookCategories.find((cd) => cd.category.id === categoryId);
+
+    return category ? category.category.name : "Unknown Category";
+  };
+
   const confirmDeleteBook = (book) => {
     setDeleteModalOpen(true);
+  };
+  const handleCreateProduct = () => {
+    setEditData(null);
+    setIsFormOpen(true);
   };
 
   return (
@@ -62,7 +83,7 @@ const Products = () => {
           />
         </div>
         <button
-          onClick={() => setIsFormOpen(true)}
+          onClick={handleCreateProduct}
           className='bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-600 transition'
         >
           Create Book
@@ -74,7 +95,7 @@ const Products = () => {
           <thead>
             <tr className='bg-gray-100 border-b border-gray-200'>
               <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                Book Title
+                Title
               </th>
               <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                 Author
@@ -83,8 +104,11 @@ const Products = () => {
                 Publisher
               </th>
               <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                Description
+                Categories
               </th>
+              {/* <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
+                Description
+              </th> */}
               <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                 Publication Year
               </th>
@@ -115,8 +139,11 @@ const Products = () => {
                   {getPublisherName(item.book.publisherId)}
                 </td>
                 <td className='px-4 py-3 text-sm text-gray-700'>
-                  {item.book.description}
+                  {getCategoryName(item)}
                 </td>
+                {/* <td className='px-4 py-3 text-sm text-gray-700'>
+                  {item.book.description}
+                </td> */}
                 <td className='px-4 py-3 text-sm text-gray-700'>
                   {item.book.publicationYear}
                 </td>
@@ -146,7 +173,6 @@ const Products = () => {
                   >
                     <i className='ri-delete-bin-line'></i>
                   </button>
-                  {/* Add Delete Button if needed */}
                 </td>
               </tr>
             ))}
@@ -159,6 +185,7 @@ const Products = () => {
           <BookForm
             closeForm={() => setIsFormOpen(false)}
             initialData={editData}
+            reload={() => setChecked(!checked)}
           />
         </div>
       )}

@@ -27,16 +27,17 @@ const AuthorForm = ({ closeForm, onSubmit, initialData = null }) => {
     };
 
     try {
-      if (initialData) {
-        await updateAuthorById(initialData.id, formData);
-      } else {
-        await createAuthor(formData);
-      }
+      // if (initialData) {
+      //   await updateAuthorById(initialData.id, formData);
+      // } else {
+      //   await createAuthor(formData);
+      // }
       onSubmit(formData);
       closeForm();
     } catch (error) {
       toast.error("Something went wrong");
     }
+
   };
 
   return (

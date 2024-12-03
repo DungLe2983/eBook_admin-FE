@@ -9,14 +9,17 @@ export const getAllBooks = async () => {
   }
 };
 
+
 export const createBook = async (data) => {
   try {
     const response = await axios.post("https://localhost:44392/api/Book", data);
-    return response.data;
+    return response;
   } catch (error) {
-    console.log("Failed to creating Book");
+    console.error("Error creating book:", error);
+    throw error; 
   }
 };
+
 export const getBookById = async (id) => {
   try {
     const response = await axios.get(`https://localhost:44392/api/Book/${id}`);
