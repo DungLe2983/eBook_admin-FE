@@ -1,74 +1,95 @@
-import React, { useState, useEffect } from "react";
-import { getBookAuthor } from "../services/bookAuthorService";
-import { getAllPublishers } from "../services/publisherService";
-import DeleteButton from "../components/DeleteButton";
-import BookForm from "./Forms/ProductForm";
-import { getBookCategory } from "../services/bookCategoryService";
+import React, { useEffect, useState } from "react";
+import BookForm from "./Forms/ProductForm.js";
+import DeleteButton from "../components/DeleteButton.js";
+import toast from "react-hot-toast";
+import {
+  createBook,
+  deleteBook,
+  getAllBooks,
+  updateBookById,
+} from "../services/bookService.js";
 
 const Products = () => {
-  const [bookAuthors, setBookAuthors] = useState([]);
-  const [bookCategories, setBookCategories] = useState([]);
-  const [publishers, setPublishers] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [books, setBooks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredBooks, setFilteredBooks] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-
+  const [selectedBook, setSelectedBook] = useState(null);
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    const fetchBookAuthorsAndPublishers = async () => {
+    const fetchData = async () => {
       try {
-        const bookAuthorData = await getBookAuthor();
-        if (bookAuthorData && bookAuthorData.data) {
-          setBookAuthors(bookAuthorData.data);
-        } else {
-          console.error("No data found for BookAuthors");
-        }
-
-        const publisherData = await getAllPublishers();
-        if (publisherData && publisherData.data) {
-          setPublishers(publisherData.data);
-        } else {
-          console.error("No data found for Publishers");
-        }
-        const bookCategoryData = await getBookCategory();
-        if (bookCategoryData && bookCategoryData.data) {
-          setBookCategories(bookCategoryData.data);
-        } else {
-          console.error("No data found for bookCategory");
-        }
+        const booksData = await getAllBooks();
+        setBooks(booksData.data);
       } catch (error) {
-        console.log("Failed to fetch BookAuthors or Publishers");
+        toast.error("Failed to fetch data");
       }
     };
 
-    fetchBookAuthorsAndPublishers();
+    fetchData();
   }, [checked]);
 
-  const getAuthorName = (authorId) => {
-    const author = bookAuthors.find((ba) => ba.author.id === authorId);
-    return author ? author.author.name : "Unknown Author";
-  };
+  // Lọc danh sách sách theo từ khóa tìm kiếm
+  useEffect(() => {
+    const filtered = books.filter((book) =>
+      book.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredBooks(filtered);
+  }, [searchTerm, books]);
 
-  const getPublisherName = (publisherId) => {
-    const publisher = publishers.find((p) => p.id === publisherId);
-    return publisher ? publisher.name : "Unknown Publisher";
-  };
-
-  const getCategoryName = (categoryId) => {
-    const category = bookCategories.find((cd) => cd.category.id === categoryId);
-
-    return category ? category.category.name : "Unknown Category";
-  };
-
-  const confirmDeleteBook = (book) => {
-    setDeleteModalOpen(true);
-  };
   const handleCreateProduct = () => {
     setEditData(null);
     setIsFormOpen(true);
   };
+
+  const handleEditBook = (book) => {
+    setEditData(book);
+    setIsFormOpen(true);
+  };
+
+  const confirmDeleteBook = (book) => {
+    setSelectedBook(book);
+    setDeleteModalOpen(true);
+  };
+
+  const handleSubmitBook = async (bookData) => {
+    try {
+      if (editData) {
+        const updatedBook = await updateBookById(editData.id, bookData);
+        setBooks((prevBooks) =>
+          prevBooks.map((book) =>
+            book.id === editData.id ? updatedBook.data : book
+          )
+        );
+        toast.success("Book updated successfully");
+      } else {
+        const newBook = await createBook(bookData);
+        setBooks((prevBooks) => [...prevBooks, newBook.data]);
+        toast.success("Book created successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to save book");
+    } finally {
+      setIsFormOpen(false);
+    }
+  };
+
+  const handleDeleteBook = async (id) => {
+    try {
+      await deleteBook(id);
+      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
+      toast.success("Book deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete book");
+    } finally {
+      setDeleteModalOpen(false);
+      setSelectedBook(null);
+    }
+  };
+  console.log("FilterBoooks===", filteredBooks);
 
   return (
     <div className='bg-white p-6 rounded-lg shadow-lg border border-gray-300 flex-1'>
@@ -79,6 +100,8 @@ const Products = () => {
           <input
             type='text'
             placeholder='Search...'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className='text-sm focus:outline-none active:outline-none h-10 w-[24rem] border border-gray-300 rounded-sm pl-11 pr-4'
           />
         </div>
@@ -106,9 +129,6 @@ const Products = () => {
               <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                 Categories
               </th>
-              {/* <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
-                Description
-              </th> */}
               <th className='px-4 py-2 text-left text-sm font-medium text-gray-600'>
                 Publication Year
               </th>
@@ -127,48 +147,46 @@ const Products = () => {
             </tr>
           </thead>
           <tbody>
-            {bookAuthors.map((item) => (
-              <tr key={item.id} className='border-b hover:bg-gray-50'>
+            {filteredBooks.map((book) => (
+              <tr key={book.id} className='border-b hover:bg-gray-50'>
                 <td className='px-4 py-3 text-sm text-gray-700'>
-                  {item.book.title}
+                  {book.title}
                 </td>
                 <td className='px-4 py-3 text-sm text-gray-700'>
-                  {getAuthorName(item.authorId)}
+                  {book.authors.map((author) => author.name).join(", ")}
                 </td>
                 <td className='px-4 py-3 text-sm text-gray-700'>
-                  {getPublisherName(item.book.publisherId)}
+                  {book.publisher.name}
                 </td>
                 <td className='px-4 py-3 text-sm text-gray-700'>
-                  {getCategoryName(item)}
+                  {book.categories.map((category) => category.name).join(", ")}
                 </td>
-                {/* <td className='px-4 py-3 text-sm text-gray-700'>
-                  {item.book.description}
-                </td> */}
+
                 <td className='px-4 py-3 text-sm text-gray-700'>
-                  {item.book.publicationYear}
+                  {book.publicationYear}
                 </td>
                 <td className='px-4 py-3 text-sm text-gray-700'>
-                  {item.book.stockQuantity}
+                  {book.stockQuantity}
                 </td>
                 <td className='px-4 py-3 text-sm text-red-500 font-semibold'>
-                  {item.book.price}
+                  {book.price}
                 </td>
                 <td className='px-4 py-3 text-sm text-gray-700'>
                   <img
-                    src={item.book.coverImage}
+                    src={book.coverImage}
                     className='w-40 h-40 object-cover'
                     alt='book cover'
                   />
                 </td>
                 <td className='py-3 px-4 space-x-4'>
                   <button
-                    onClick={() => setEditData(item)}
+                    onClick={() => handleEditBook(book)}
                     className='text-blue-600 hover:text-blue-800 text-[18px]'
                   >
                     <i className='ri-edit-line'></i>
                   </button>
                   <button
-                    onClick={() => confirmDeleteBook()}
+                    onClick={() => confirmDeleteBook(book)}
                     className='text-red-600 hover:text-red-800 text-[18px]'
                   >
                     <i className='ri-delete-bin-line'></i>
@@ -181,16 +199,18 @@ const Products = () => {
       </div>
 
       {isFormOpen && (
-        <div className='form-container'>
-          <BookForm
-            closeForm={() => setIsFormOpen(false)}
-            initialData={editData}
-            reload={() => setChecked(!checked)}
-          />
-        </div>
+        <BookForm
+          closeForm={() => setIsFormOpen(false)}
+          reload={() => setChecked(!checked)}
+          initialData={editData}
+        />
       )}
-      {deleteModalOpen && (
-        <DeleteButton onClose={() => setDeleteModalOpen(false)} />
+      {deleteModalOpen && selectedBook && (
+        <DeleteButton
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={() => handleDeleteBook(selectedBook.id)}
+          itemName={selectedBook.title}
+        />
       )}
     </div>
   );
