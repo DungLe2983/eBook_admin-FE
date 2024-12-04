@@ -2,12 +2,7 @@ import React, { useEffect, useState } from "react";
 import BookForm from "./Forms/ProductForm.js";
 import DeleteButton from "../components/DeleteButton.js";
 import toast from "react-hot-toast";
-import {
-  createBook,
-  deleteBook,
-  getAllBooks,
-  updateBookById,
-} from "../services/bookService.js";
+import { deleteBook, getAllBooks } from "../services/bookService.js";
 
 const Products = () => {
   const [books, setBooks] = useState([]);
@@ -32,7 +27,6 @@ const Products = () => {
     fetchData();
   }, [checked]);
 
-  // Lọc danh sách sách theo từ khóa tìm kiếm
   useEffect(() => {
     const filtered = books.filter((book) =>
       book.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -53,28 +47,6 @@ const Products = () => {
   const confirmDeleteBook = (book) => {
     setSelectedBook(book);
     setDeleteModalOpen(true);
-  };
-
-  const handleSubmitBook = async (bookData) => {
-    try {
-      if (editData) {
-        const updatedBook = await updateBookById(editData.id, bookData);
-        setBooks((prevBooks) =>
-          prevBooks.map((book) =>
-            book.id === editData.id ? updatedBook.data : book
-          )
-        );
-        toast.success("Book updated successfully");
-      } else {
-        const newBook = await createBook(bookData);
-        setBooks((prevBooks) => [...prevBooks, newBook.data]);
-        toast.success("Book created successfully");
-      }
-    } catch (error) {
-      toast.error("Failed to save book");
-    } finally {
-      setIsFormOpen(false);
-    }
   };
 
   const handleDeleteBook = async (id) => {
@@ -169,7 +141,10 @@ const Products = () => {
                   {book.stockQuantity}
                 </td>
                 <td className='px-4 py-3 text-sm text-red-500 font-semibold'>
-                  {book.price}
+                  {book.price.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
                 </td>
                 <td className='px-4 py-3 text-sm text-gray-700'>
                   <img

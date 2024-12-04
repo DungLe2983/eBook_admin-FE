@@ -50,6 +50,7 @@ const User = () => {
   const handleSubmitUser = async (userData) => {
     try {
       const updatedUser = await updateUserById(editData.id, userData);
+
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.id === editData.id ? updatedUser.data : user

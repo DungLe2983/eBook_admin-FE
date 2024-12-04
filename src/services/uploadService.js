@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 export const uploadToCloudinary = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "eBook_project"); // Thay bằng Upload Preset Name của bạn
+  formData.append("upload_preset", "eBook_project");
 
   try {
     const response = await fetch(

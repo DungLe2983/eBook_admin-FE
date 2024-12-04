@@ -9,14 +9,13 @@ export const getAllBooks = async () => {
   }
 };
 
-
 export const createBook = async (data) => {
   try {
     const response = await axios.post("https://localhost:44392/api/Book", data);
     return response;
   } catch (error) {
     console.error("Error creating book:", error);
-    throw error; 
+    throw error;
   }
 };
 
@@ -37,7 +36,11 @@ export const updateBookById = async (id, data) => {
     );
     return response.data;
   } catch (error) {
-    console.log("Failed to update Book");
+    console.error(
+      "Failed to update book:",
+      error.response?.data || error.message
+    );
+    throw error;
   }
 };
 

@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { getAllAuthors } from "../../services/authorService";
 import { getAllCategories } from "../../services/categoryService";
 import { getAllPublishers } from "../../services/publisherService";
-import { createBook } from "../../services/bookService";
+import { createBook, updateBookById } from "../../services/bookService";
 import { createBookAuthor } from "../../services/bookAuthorService";
 import { createBookCategory } from "../../services/bookCategoryService";
 
@@ -42,51 +42,58 @@ const ProductForm = ({ closeForm, reload, initialData = null }) => {
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title);
-      setAuthor(initialData.authorId);
-      setPublisher(initialData.publisher);
+      setAuthor(initialData.authors?.map((p) => p.id) || []);
+      setPublisher(initialData.publisherId);
       setPublicationYear(initialData.publicationYear);
       setPrice(initialData.price);
       setStockQuantity(initialData.stockQuantity);
       setCoverImage(initialData.coverImage);
       setDescription(initialData.description);
-      setCategories(initialData.categories || []);
+      setCategories(initialData.categories?.map((cat) => cat.id) || []);
       setDiscountPercentage(initialData.discountPercentage || 0);
     }
   }, [initialData]);
+
+  console.log("initialData", initialData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = {
       title,
-      authorId,
-      publisherId: publisher,
+      description,
       publicationYear: parseInt(publicationYear, 10),
       price: parseFloat(price),
       stockQuantity: parseInt(stockQuantity, 10),
       coverImage,
-      description,
-      categories,
       discountPercentage: parseFloat(discountPercentage),
+      publisherId: publisher,
+      categoryIds: categories,
+      authorIds: Array.isArray(authorId) ? authorId : [authorId],
     };
 
-    console.log("Form data:", formData);
-
     try {
-      const bookResponse = await createBook(formData);
-      const { id: bookId } = bookResponse.data.data;
+      if (initialData) {
+        console.log("formData Update :", formData);
+        await updateBookById(initialData.id, formData);
 
-      for (const categoryId of categories) {
-        await createBookCategory({ bookId, categoryId });
+        toast.success("Book updated successfully!");
+      } else {
+        console.log("formData Create :", formData);
+        const bookResponse = await createBook(formData);
+        const { id: bookId } = bookResponse.data.data;
+
+        for (const categoryId of categories) {
+          await createBookCategory({ bookId, categoryId });
+        }
+
+        await createBookAuthor({ bookId, authorId });
+        toast.success("Book created successfully!");
       }
-
-      await createBookAuthor({ bookId, authorId });
-
-      toast.success("Book created successfully!");
       reload();
       closeForm();
     } catch (error) {
-      toast.error("Failed to create book or its relationships hehee.");
+      toast.error("Failed to create book or its relationships.");
       console.error(error);
     }
   };
@@ -137,7 +144,7 @@ const ProductForm = ({ closeForm, reload, initialData = null }) => {
             </label>
             <select
               value={publisher}
-              onChange={(e) => setPublisher(e.target.value)} // Update publisher state
+              onChange={(e) => setPublisher(e.target.value)}
               className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
               required
             >
