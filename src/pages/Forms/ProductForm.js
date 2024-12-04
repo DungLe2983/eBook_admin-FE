@@ -6,6 +6,7 @@ import { getAllPublishers } from "../../services/publisherService";
 import { createBook, updateBookById } from "../../services/bookService";
 import { createBookAuthor } from "../../services/bookAuthorService";
 import { createBookCategory } from "../../services/bookCategoryService";
+import { uploadToCloudinary } from "../../services/uploadService";
 
 const ProductForm = ({ closeForm, reload, initialData = null }) => {
   const [title, setTitle] = useState("");
@@ -95,6 +96,24 @@ const ProductForm = ({ closeForm, reload, initialData = null }) => {
     } catch (error) {
       toast.error("Failed to create book or its relationships.");
       console.error(error);
+    }
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const url = await uploadToCloudinary(file);
+      if (url) {
+        setCoverImage(url);
+        toast.success("Image uploaded successfully!");
+      } else {
+        toast.error("Failed to upload image.");
+      }
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      toast.error("An error occurred while uploading the image.");
     }
   };
 
@@ -215,13 +234,20 @@ const ProductForm = ({ closeForm, reload, initialData = null }) => {
               Cover Image
             </label>
             <input
-              type='text'
-              value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
+              type='file'
+              onChange={handleImageUpload}
               className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
-              placeholder='Enter cover image URL'
-              required
+              accept='image/*'
             />
+            {coverImage && (
+              <div className='mt-2'>
+                <img
+                  src={coverImage}
+                  alt='Cover Preview'
+                  className='max-w-full h-auto'
+                />
+              </div>
+            )}
           </div>
           <div className='mb-4'>
             <label className='block text-sm font-medium text-gray-700'>
