@@ -19,6 +19,17 @@ export const createBook = async (data) => {
   }
 };
 
+export const getBooksByPage = async (pageNumber, pageSize) => {
+  try {
+    const response = await axios.get(
+      `https://localhost:44392/api/Book?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log("Failed to get Books by page");
+  }
+};
+
 export const getBookById = async (id) => {
   try {
     const response = await axios.get(`https://localhost:44392/api/Book/${id}`);
