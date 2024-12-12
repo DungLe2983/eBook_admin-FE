@@ -2,7 +2,9 @@ import axios from "axios";
 
 export const getAllBooks = async () => {
   try {
-    const response = await axios.get("https://localhost:44392/api/Book");
+    const response = await axios.get(
+      "https://localhost:44392/api/Book?pageNumber=1&pageSize=50"
+    );
     return response.data;
   } catch (error) {
     console.log("Failed to fetch authors");

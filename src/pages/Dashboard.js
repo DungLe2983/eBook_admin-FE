@@ -5,12 +5,14 @@ import { getAllBooks } from "../services/bookService";
 import { getAllCategories } from "../services/categoryService";
 import { getAllAuthors } from "../services/authorService";
 import { getAllPublishers } from "../services/publisherService";
+import { getAllUsers } from "../services/userService";
+import { getAllOrders } from "../services/orderService";
 
 const Dashboard = () => {
   const [dataCounts, setDataCounts] = useState({
-    totalRevenue: 0, // Lấy tổng doanh thu từ backend nếu cần
-    totalOrders: 0, // Lấy tổng số đơn hàng
-    totalUsers: 0, // Lấy tổng số người dùng
+    totalRevenue: 0, // Tổng doanh thu
+    totalOrders: 0, // Tổng số đơn hàng
+    totalUsers: 0, // Tổng số người dùng
     totalBooks: 0,
     totalCategories: 0,
     totalAuthors: 0,
@@ -19,16 +21,22 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const booksData = await getAllBooks();
         const categoriesData = await getAllCategories();
         const authorsData = await getAllAuthors();
         const publishersData = await getAllPublishers();
+        const usersData = await getAllUsers();
+        const ordersData = await getAllOrders();
+
+        // Tính tổng doanh thu từ các đơn hàng có trạng thái 'Completed'
+        const totalRevenue = ordersData.data
+          .filter((order) => order.status === "Completed") // Chỉ lấy các đơn hàng có trạng thái 'Completed'
+          .reduce((sum, order) => sum + order.totalAmount, 0); // Cộng dồn totalAmount
 
         setDataCounts({
-          totalRevenue: 6268500,
-          totalOrders: 18,
-          totalUsers: 4,
+          totalRevenue: totalRevenue,
+          totalOrders: ordersData.data.length,
+          totalUsers: usersData.data.length,
           totalBooks: booksData.data.length,
           totalCategories: categoriesData.data.length,
           totalAuthors: authorsData.data.length,
