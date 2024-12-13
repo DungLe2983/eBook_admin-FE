@@ -64,7 +64,7 @@ const OrderForm = ({ closeForm, reload, initialData = null }) => {
                 new Date(initialData?.orderDate).toLocaleDateString() || ""
               }
               readOnly
-              className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+              className='mt-1 block w-full px-3 py-2 border bg-gray-200 cursor-not-allowed border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm'
             />
           </div>
           <div className='mb-4'>
@@ -75,7 +75,7 @@ const OrderForm = ({ closeForm, reload, initialData = null }) => {
               type='text'
               value={customerName}
               readOnly
-              className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+              className='mt-1 block w-full px-3 py-2 border bg-gray-200 cursor-not-allowed border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm'
             />
           </div>
 
@@ -88,7 +88,7 @@ const OrderForm = ({ closeForm, reload, initialData = null }) => {
               type='text'
               value={shipmentAddress}
               readOnly
-              className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+              className='mt-1 block w-full px-3 py-2 border bg-gray-200 cursor-not-allowed border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm'
             />
           </div>
 
@@ -101,7 +101,7 @@ const OrderForm = ({ closeForm, reload, initialData = null }) => {
               type='text'
               value={phoneNumber}
               readOnly
-              className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+              className='mt-1 block w-full px-3 py-2 border bg-gray-200 cursor-not-allowed border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm'
             />
           </div>
 

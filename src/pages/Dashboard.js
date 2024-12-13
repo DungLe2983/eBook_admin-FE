@@ -10,28 +10,49 @@ import { getAllOrders } from "../services/orderService";
 
 const Dashboard = () => {
   const [dataCounts, setDataCounts] = useState({
-    totalRevenue: 0, // Tổng doanh thu
-    totalOrders: 0, // Tổng số đơn hàng
-    totalUsers: 0, // Tổng số người dùng
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalUsers: 0,
     totalBooks: 0,
     totalCategories: 0,
     totalAuthors: 0,
+    totalPublishers: 0,
   });
+
+  const [orders, setOrders] = useState([]); // Dữ liệu đơn hàng
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const booksData = await getAllBooks();
-        const categoriesData = await getAllCategories();
-        const authorsData = await getAllAuthors();
-        const publishersData = await getAllPublishers();
-        const usersData = await getAllUsers();
-        const ordersData = await getAllOrders();
+      setLoading(true);
+      setError(null);
 
-        // Tính tổng doanh thu từ các đơn hàng có trạng thái 'Completed'
-        const totalRevenue = ordersData.data
-          .filter((order) => order.status === "Completed") // Chỉ lấy các đơn hàng có trạng thái 'Completed'
-          .reduce((sum, order) => sum + order.totalAmount, 0); // Cộng dồn totalAmount
+      try {
+        const [
+          booksData,
+          categoriesData,
+          authorsData,
+          publishersData,
+          usersData,
+          ordersData,
+        ] = await Promise.all([
+          getAllBooks(),
+          getAllCategories(),
+          getAllAuthors(),
+          getAllPublishers(),
+          getAllUsers(),
+          getAllOrders(),
+        ]);
+
+        const completedOrders = ordersData.data.filter(
+          (order) => order.status === "Completed"
+        );
+
+        const totalRevenue = completedOrders.reduce(
+          (sum, order) => sum + order.totalAmount,
+          0
+        );
 
         setDataCounts({
           totalRevenue: totalRevenue,
@@ -42,13 +63,26 @@ const Dashboard = () => {
           totalAuthors: authorsData.data.length,
           totalPublishers: publishersData.data.length,
         });
+
+        setOrders(ordersData.data);
       } catch (error) {
         console.error("Failed to fetch data for dashboard:", error);
+        setError("Failed to load data.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p className='text-red-500'>{error}</p>;
+  }
 
   return (
     <div className='p-4 bg-white rounded shadow'>
@@ -86,8 +120,8 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className='my-16 bg-white  h-full w-full flex items-center justify-center'>
-        <SalesChart />
+      <div className='my-16 bg-white h-full w-full flex items-center justify-center'>
+        <SalesChart orders={orders} />
       </div>
     </div>
   );
