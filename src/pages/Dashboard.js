@@ -120,7 +120,7 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className='my-16 bg-white h-full w-full flex items-center justify-center'>
+      <div className='my-16 bg-white h-full flex items-center '>
         <SalesChart orders={orders} />
       </div>
     </div>
